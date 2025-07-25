@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python:*)",
+      "Bash(powershell:*)",
+      "WebFetch(domain:pagedone.io)",
+      "WebFetch(domain:tailadmin.com)"
+    ],
+    "deny": []
+  }
+}
