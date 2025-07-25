@@ -1,0 +1,82 @@
+[
+  {
+    "id": "R-001",
+    "title": "Employee Handbook 2025",
+    "filename": "employee-handbook-2025.pdf",
+    "file_type": "pdf",
+    "file_size": "2.4 MB",
+    "description": "Complete guide to company policies and procedures",
+    "allowed_roles": ["admin", "hr", "manager", "engineer", "marketing"],
+    "upload_date": "2025-01-15"
+  },
+  {
+    "id": "R-002",
+    "title": "System Architecture Documentation",
+    "filename": "system-architecture.pdf",
+    "file_type": "pdf",
+    "file_size": "5.1 MB",
+    "description": "Technical documentation for system architecture",
+    "allowed_roles": ["admin", "engineer", "manager"],
+    "upload_date": "2025-01-20"
+  },
+  {
+    "id": "R-003",
+    "title": "Salary & Benefits Guide",
+    "filename": "salary-benefits-2025.pdf",
+    "file_type": "pdf",
+    "file_size": "1.8 MB",
+    "description": "Confidential salary scales and benefits information",
+    "allowed_roles": ["admin", "hr", "manager"],
+    "upload_date": "2025-01-10"
+  },
+  {
+    "id": "R-004",
+    "title": "Marketing Campaign Templates",
+    "filename": "marketing-templates.zip",
+    "file_type": "zip",
+    "file_size": "12.3 MB",
+    "description": "Brand templates and marketing materials",
+    "allowed_roles": ["admin", "marketing", "manager"],
+    "upload_date": "2025-01-22"
+  },
+  {
+    "id": "R-005",
+    "title": "Security Protocols",
+    "filename": "security-protocols.pdf",
+    "file_type": "pdf",
+    "file_size": "3.2 MB",
+    "description": "Cybersecurity policies and incident response procedures",
+    "allowed_roles": ["admin", "engineer", "manager"],
+    "upload_date": "2025-01-18"
+  },
+  {
+    "id": "R-006",
+    "title": "Public Company Information",
+    "filename": "company-info.pdf",
+    "file_type": "pdf",
+    "file_size": "950 KB",
+    "description": "General company information and public documents",
+    "allowed_roles": ["admin", "hr", "manager", "engineer", "marketing", "intern"],
+    "upload_date": "2025-01-25"
+  },
+  {
+    "id": "R-007",
+    "title": "Development Standards",
+    "filename": "dev-standards.docx",
+    "file_type": "docx",
+    "file_size": "680 KB",
+    "description": "Coding standards and development best practices",
+    "allowed_roles": ["admin", "engineer", "manager"],
+    "upload_date": "2025-01-19"
+  },
+  {
+    "id": "R-008",
+    "title": "HR Forms & Templates",
+    "filename": "hr-forms.zip",
+    "file_type": "zip",
+    "file_size": "4.7 MB",
+    "description": "Collection of HR forms and document templates",
+    "allowed_roles": ["admin", "hr", "manager"],
+    "upload_date": "2025-01-12"
+  }
+]

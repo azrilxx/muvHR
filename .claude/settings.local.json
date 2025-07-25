@@ -4,7 +4,10 @@
       "Bash(python:*)",
       "Bash(powershell:*)",
       "WebFetch(domain:pagedone.io)",
-      "WebFetch(domain:tailadmin.com)"
+      "WebFetch(domain:tailadmin.com)",
+      "Bash(mkdir:*)",
+      "Bash(rm:*)",
+      "Bash(cp:*)"
     ],
     "deny": []
   }

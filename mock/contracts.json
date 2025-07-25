@@ -1,0 +1,50 @@
+[
+  {
+    "id": "C-001",
+    "name": "Azril Rahman",
+    "position": "Senior Software Engineer",
+    "contract_expiry": "2025-12-31"
+  },
+  {
+    "id": "C-002",
+    "name": "Sharifah Aminah",
+    "position": "Project Manager",
+    "contract_expiry": "2025-08-15"
+  },
+  {
+    "id": "C-003",
+    "name": "Ahmad Hassan",
+    "position": "DevOps Engineer",
+    "contract_expiry": "2025-07-30"
+  },
+  {
+    "id": "C-004",
+    "name": "Siti Nurhaliza",
+    "position": "UX Designer",
+    "contract_expiry": "2025-09-20"
+  },
+  {
+    "id": "C-005",
+    "name": "Rahman Ali",
+    "position": "Data Analyst",
+    "contract_expiry": "2025-11-15"
+  },
+  {
+    "id": "C-006",
+    "name": "Fatimah Zahra",
+    "position": "HR Specialist",
+    "contract_expiry": "2025-08-05"
+  },
+  {
+    "id": "C-007",
+    "name": "Omar Ibrahim",
+    "position": "Security Consultant",
+    "contract_expiry": "2026-02-28"
+  },
+  {
+    "id": "C-008",
+    "name": "Aisha Mohamed",
+    "position": "Quality Assurance",
+    "contract_expiry": "2025-07-28"
+  }
+]

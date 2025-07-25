@@ -39,73 +39,7 @@
     }
   </script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    /* Additional custom styles for complex layouts */
-    .gradient-bg {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-    
-    .card-hover {
-      transition: all 0.2s ease-in-out;
-    }
-    
-    .card-hover:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    }
-
-    .role-pill {
-      transition: all 0.15s ease-in-out;
-    }
-
-    .role-pill:hover {
-      transform: scale(1.05);
-    }
-
-    /* Table styling improvements */
-    .modern-table {
-      border-collapse: separate;
-      border-spacing: 0;
-    }
-
-    .modern-table th {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-
-    /* Animations */
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .slide-in {
-      animation: slideIn 0.3s ease-out;
-    }
-
-    /* Custom scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: #f1f1f1;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: #c1c1c1;
-      border-radius: 3px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: #a8a8a8;
-    }
-  </style>
+  <link rel="stylesheet" href="/static/style.css">
 </head>
 
 <body class="bg-gray-50 font-sans">
@@ -192,96 +126,19 @@
       </div>
     </div>
 
-    <!-- Action Buttons Section -->
-    <div id="action-buttons" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 slide-in">
-      <!-- Contractors Button -->
-      <button onclick="loadContracts()" 
-              class="group bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md hover:border-primary-300 transition-all duration-200 text-left card-hover">
-        <div class="flex items-center space-x-4">
-          <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">
-            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-            </svg>
-          </div>
-          <div>
-            <h3 class="text-lg font-semibold text-gray-900 group-hover:text-primary-700 transition-colors">Contractors</h3>
-            <p class="text-gray-600 text-sm">View contract expiry tracking</p>
-          </div>
-        </div>
-      </button>
-
-      <!-- Onboarding Button -->
-      <button onclick="loadOnboarding()" 
-              class="group bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md hover:border-primary-300 transition-all duration-200 text-left card-hover">
-        <div class="flex items-center space-x-4">
-          <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors">
-            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
-            </svg>
-          </div>
-          <div>
-            <h3 class="text-lg font-semibold text-gray-900 group-hover:text-primary-700 transition-colors">Onboarding</h3>
-            <p class="text-gray-600 text-sm">Manage new employee checklists</p>
-          </div>
-        </div>
-      </button>
-
-      <!-- Resources Button -->
-      <button onclick="loadResources()" 
-              class="group bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md hover:border-primary-300 transition-all duration-200 text-left card-hover">
-        <div class="flex items-center space-x-4">
-          <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center group-hover:bg-purple-200 transition-colors">
-            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-            </svg>
-          </div>
-          <div>
-            <h3 class="text-lg font-semibold text-gray-900 group-hover:text-primary-700 transition-colors">Resources</h3>
-            <p class="text-gray-600 text-sm">Access role-based documents</p>
-          </div>
-        </div>
-      </button>
-
-      <!-- Upload Button -->
-      <button onclick="showUploadModal()" 
-              class="group bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md hover:border-primary-300 transition-all duration-200 text-left card-hover">
-        <div class="flex items-center space-x-4">
-          <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center group-hover:bg-orange-200 transition-colors">
-            <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-            </svg>
-          </div>
-          <div>
-            <h3 class="text-lg font-semibold text-gray-900 group-hover:text-primary-700 transition-colors">Upload</h3>
-            <p class="text-gray-600 text-sm">Upload and manage files</p>
-          </div>
-        </div>
-      </button>
-    </div>
-
-    <!-- Secondary Action Buttons -->
-    <div id="secondary-actions" class="hidden mb-8 slide-in">
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-semibold text-gray-900">Quick Actions</h3>
-        </div>
-        <div class="flex flex-wrap gap-3">
-          <button onclick="loadArchive()" 
-                  class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
-            </svg>
-            View Archive
-          </button>
-        </div>
-      </div>
+    <!-- Dashboard Modules Section -->
+    <div id="dashboard-modules" class="hidden mb-8">
+      <!-- Modules will be dynamically generated by JavaScript -->
     </div>
 
     <!-- Content Sections -->
     <div id="contracts-table" class="slide-in"></div>
     <div id="onboarding-section" class="slide-in"></div>
     <div id="resources-section" class="slide-in"></div>
-    <div id="archive-section" class="slide-in"></div>
+    <div id="time-off-section" class="slide-in"></div>
+    <div id="time-tracking-section" class="slide-in"></div>
+    <div id="groups-section" class="slide-in"></div>
+    <div id="entities-section" class="slide-in"></div>
   </div>
 
   <!-- Upload Modal -->
@@ -379,6 +236,6 @@
     updateTime();
     setInterval(updateTime, 1000);
   </script>
-  <script src="app.js"></script>
+  <script src="/static/script.js"></script>
 </body>
 </html>

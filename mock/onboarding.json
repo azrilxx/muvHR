@@ -1,0 +1,136 @@
+[
+  {
+    "id": "S-001",
+    "name": "John Smith",
+    "position": "Software Developer",
+    "start_date": "2025-08-01",
+    "tasks": [
+      {
+        "id": 0,
+        "name": "Complete IT setup and receive laptop",
+        "completed": true
+      },
+      {
+        "id": 1,
+        "name": "Sign employment contract and NDA",
+        "completed": true
+      },
+      {
+        "id": 2,
+        "name": "Complete security badge photo and access card",
+        "completed": false
+      },
+      {
+        "id": 3,
+        "name": "Attend company orientation session",
+        "completed": false
+      },
+      {
+        "id": 4,
+        "name": "Meet with direct manager for role overview",
+        "completed": false
+      },
+      {
+        "id": 5,
+        "name": "Complete mandatory HR training modules",
+        "completed": false
+      },
+      {
+        "id": 6,
+        "name": "Set up development environment and tools",
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "S-002",
+    "name": "Maria Garcia",
+    "position": "Marketing Specialist",
+    "start_date": "2025-07-28",
+    "tasks": [
+      {
+        "id": 0,
+        "name": "Complete IT setup and receive laptop",
+        "completed": true
+      },
+      {
+        "id": 1,
+        "name": "Sign employment contract and NDA",
+        "completed": true
+      },
+      {
+        "id": 2,
+        "name": "Complete security badge photo and access card",
+        "completed": true
+      },
+      {
+        "id": 3,
+        "name": "Attend company orientation session",
+        "completed": true
+      },
+      {
+        "id": 4,
+        "name": "Meet with direct manager for role overview",
+        "completed": false
+      },
+      {
+        "id": 5,
+        "name": "Complete mandatory HR training modules",
+        "completed": false
+      },
+      {
+        "id": 6,
+        "name": "Access marketing tools and platforms",
+        "completed": false
+      },
+      {
+        "id": 7,
+        "name": "Review brand guidelines and style guide",
+        "completed": false
+      }
+    ]
+  },
+  {
+    "id": "S-003",
+    "name": "David Chen",
+    "position": "Data Analyst",
+    "start_date": "2025-08-05",
+    "tasks": [
+      {
+        "id": 0,
+        "name": "Complete IT setup and receive laptop",
+        "completed": false
+      },
+      {
+        "id": 1,
+        "name": "Sign employment contract and NDA",
+        "completed": false
+      },
+      {
+        "id": 2,
+        "name": "Complete security badge photo and access card",
+        "completed": false
+      },
+      {
+        "id": 3,
+        "name": "Attend company orientation session",
+        "completed": false
+      },
+      {
+        "id": 4,
+        "name": "Meet with direct manager for role overview",
+        "completed": false
+      },
+      {
+        "id": 5,
+        "name": "Complete mandatory HR training modules",
+        "completed": false
+      },
+      {
+        "id": 6,
+        "name": "Set up data analysis tools and database access",
+        "completed": false
+      }
+    ]
+  }
+]

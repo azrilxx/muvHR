@@ -1,11 +1,44 @@
 async function loadContracts() {
+  const currentRole = getCurrentRole();
+  
+  if (!currentRole) {
+    showNotification('error', 'Role Required', 'Please select your role first');
+    return;
+  }
+  
   try {
-    const res = await fetch('/contracts');
+    const res = await fetch(`http://localhost:8080/contracts?role=${currentRole}`);
     const data = await res.json();
-    renderContractsTable(data.contracts);
+    
+    if (res.ok) {
+      renderContractsTable(data.contracts);
+    } else {
+      console.error('Error loading contracts:', data.error);
+      document.getElementById('contracts-table').innerHTML = `
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center">
+          <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+          <p class="text-gray-600">${data.error}</p>
+        </div>
+      `;
+    }
   } catch (error) {
     console.error('Error loading contracts:', error);
-    document.getElementById('contracts-table').innerHTML = '<p>Error loading contracts</p>';
+    document.getElementById('contracts-table').innerHTML = `
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center">
+        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+          </svg>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Connection Error</h3>
+        <p class="text-gray-600">Unable to connect to server</p>
+      </div>
+    `;
   }
 }
 
@@ -124,17 +157,50 @@ function renderContractsTable(contracts) {
 }
 
 async function loadOnboarding() {
+  const currentRole = getCurrentRole();
+  
+  if (!currentRole) {
+    showNotification('error', 'Role Required', 'Please select your role first');
+    return;
+  }
+  
   try {
-    const res = await fetch('/onboarding');
+    const res = await fetch(`http://localhost:8080/onboarding?role=${currentRole}`);
     const data = await res.json();
-    renderOnboardingSection(data.staff);
+    
+    if (res.ok) {
+      renderOnboardingSection(data.staff, currentRole);
+    } else {
+      console.error('Error loading onboarding:', data.error);
+      document.getElementById('onboarding-section').innerHTML = `
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center">
+          <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+          <p class="text-gray-600">${data.error}</p>
+        </div>
+      `;
+    }
   } catch (error) {
     console.error('Error loading onboarding:', error);
-    document.getElementById('onboarding-section').innerHTML = '<p>Error loading onboarding data</p>';
+    document.getElementById('onboarding-section').innerHTML = `
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center">
+        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+          </svg>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Connection Error</h3>
+        <p class="text-gray-600">Unable to connect to server</p>
+      </div>
+    `;
   }
 }
 
-function renderOnboardingSection(staff) {
+function renderOnboardingSection(staff, currentRole) {
   const onboardingContainer = document.getElementById('onboarding-section');
   
   if (!staff || staff.length === 0) {
@@ -230,7 +296,8 @@ function renderOnboardingSection(staff) {
                     isCompleted 
                       ? 'bg-gray-100 text-gray-600 hover:bg-gray-200' 
                       : 'bg-primary-100 text-primary-700 hover:bg-primary-200'
-                  }">
+                  } ${currentRole !== 'admin' && currentRole !== 'hr' ? 'opacity-50 cursor-not-allowed' : ''}"
+                  ${currentRole !== 'admin' && currentRole !== 'hr' ? 'disabled' : ''}>
             ${isCompleted ? 'Undo' : 'Complete'}
           </button>
         </div>
@@ -253,8 +320,21 @@ function renderOnboardingSection(staff) {
 }
 
 async function toggleTask(staffId, taskId) {
+  const currentRole = getCurrentRole();
+  
+  if (!currentRole) {
+    showNotification('error', 'Role Required', 'Please select your role first');
+    return;
+  }
+  
+  // Check if user has permission to modify tasks
+  if (currentRole !== 'admin' && currentRole !== 'hr') {
+    showNotification('error', 'Access Denied', 'Only Admin and HR can modify onboarding tasks');
+    return;
+  }
+  
   try {
-    const res = await fetch(`/onboarding/${staffId}/toggle`, {
+    const res = await fetch(`http://localhost:8080/onboarding/${staffId}/toggle`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -264,16 +344,17 @@ async function toggleTask(staffId, taskId) {
     
     const data = await res.json();
     
-    if (data.success) {
+    if (res.ok && data.success) {
+      showNotification('success', 'Task Updated', data.message);
       // Reload the onboarding section to reflect changes
       loadOnboarding();
     } else {
       console.error('Error toggling task:', data.error);
-      alert('Error updating task status');
+      showNotification('error', 'Update Failed', data.error || 'Error updating task status');
     }
   } catch (error) {
     console.error('Error toggling task:', error);
-    alert('Error connecting to server');
+    showNotification('error', 'Connection Error', 'Unable to connect to server');
   }
 }
 
@@ -330,6 +411,7 @@ function updateRoleDisplay() {
     // Show welcome header and action buttons
     welcomeHeader.classList.remove('hidden');
     actionButtons.classList.remove('hidden');
+    document.getElementById('secondary-actions').classList.remove('hidden');
     
     // Update welcome content
     welcomeMessage.textContent = `Welcome back, ${currentRole.charAt(0).toUpperCase() + currentRole.slice(1)}!`;
@@ -348,6 +430,7 @@ function updateRoleDisplay() {
     // Hide welcome header and action buttons
     welcomeHeader.classList.add('hidden');
     actionButtons.classList.add('hidden');
+    document.getElementById('secondary-actions').classList.add('hidden');
   }
 }
 
@@ -367,18 +450,38 @@ async function loadResources() {
   }
   
   try {
-    const res = await fetch(`/resources?role=${currentRole}`);
+    const res = await fetch(`http://localhost:8080/resources?role=${currentRole}`);
     const data = await res.json();
     
     if (res.ok) {
       renderResourcesSection(data.resources, currentRole);
     } else {
       console.error('Error loading resources:', data.error);
-      document.getElementById('resources-section').innerHTML = `<p>Error: ${data.error}</p>`;
+      document.getElementById('resources-section').innerHTML = `
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center">
+          <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
+          <p class="text-gray-600">${data.error}</p>
+        </div>
+      `;
     }
   } catch (error) {
     console.error('Error loading resources:', error);
-    document.getElementById('resources-section').innerHTML = '<p>Error loading resources</p>';
+    document.getElementById('resources-section').innerHTML = `
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center">
+        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+          </svg>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Connection Error</h3>
+        <p class="text-gray-600">Unable to connect to server</p>
+      </div>
+    `;
   }
 }
 
@@ -514,11 +617,11 @@ function renderResourcesSection(resources, currentRole) {
 
 async function viewFile(filename, role) {
   try {
-    const res = await fetch(`/files/${filename}?role=${role}`);
+    const res = await fetch(`http://localhost:8080/files/${filename}?role=${role}`);
     const data = await res.json();
     
     if (res.ok) {
-      showNotification('success', `File Preview: ${data.file_info.title}`, `${data.message}\n\nFile Details:\n• Size: ${data.file_info.file_size}\n• Type: ${data.file_info.file_type.toUpperCase()}\n• In a real implementation, this would open a file preview.`);
+      showNotification('success', `File Preview: ${data.file_info.title}`, `${data.message}\n\nFile Details:\n• Size: ${data.file_info.file_size}\n• Type: ${data.file_info.file_type.toUpperCase()}\n• ${data.note}`);
     } else {
       showNotification('error', 'Access Denied', data.error);
     }
@@ -530,11 +633,11 @@ async function viewFile(filename, role) {
 
 async function downloadFile(filename, role) {
   try {
-    const res = await fetch(`/files/${filename}?role=${role}`);
+    const res = await fetch(`http://localhost:8080/files/${filename}?role=${role}`);
     const data = await res.json();
     
     if (res.ok) {
-      showNotification('success', `Download Started: ${filename}`, `${data.message}\n\nIn a real implementation, the file would download automatically to your downloads folder.`);
+      showNotification('success', `Download Started: ${filename}`, `${data.message}\n\n${data.note}`);
     } else {
       showNotification('error', 'Access Denied', data.error);
     }
@@ -597,4 +700,243 @@ function showNotification(type, title, message) {
       notification.remove();
     }
   }, 5000);
+}
+
+// Upload Modal Functions
+function showUploadModal() {
+  const currentRole = getCurrentRole();
+  if (!currentRole) {
+    showNotification('error', 'Role Required', 'Please select your role first');
+    return;
+  }
+  document.getElementById('upload-modal').classList.remove('hidden');
+}
+
+function hideUploadModal() {
+  document.getElementById('upload-modal').classList.add('hidden');
+  // Reset form
+  document.getElementById('upload-form').reset();
+}
+
+// File Upload Handler
+document.addEventListener('DOMContentLoaded', function() {
+  const uploadForm = document.getElementById('upload-form');
+  const uploadSubmit = document.getElementById('upload-submit');
+  const uploadText = document.getElementById('upload-text');
+  const uploadSpinner = document.getElementById('upload-spinner');
+  
+  if (uploadForm) {
+    uploadForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const currentRole = getCurrentRole();
+      if (!currentRole) {
+        showNotification('error', 'Role Required', 'Please select your role first');
+        return;
+      }
+      
+      // Show loading state
+      uploadSubmit.disabled = true;
+      uploadText.classList.add('hidden');
+      uploadSpinner.classList.remove('hidden');
+      
+      try {
+        const formData = new FormData(uploadForm);
+        formData.append('uploaded_by', currentRole);
+        
+        const response = await fetch('http://localhost:8080/upload', {
+          method: 'POST',
+          body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          showNotification('success', 'Upload Successful', `File "${data.file_info.title}" has been uploaded successfully`);
+          hideUploadModal();
+          // Refresh archive if it's currently displayed
+          if (document.getElementById('archive-section').innerHTML) {
+            loadArchive();
+          }
+        } else {
+          throw new Error(data.error || 'Upload failed');
+        }
+      } catch (error) {
+        console.error('Upload error:', error);
+        showNotification('error', 'Upload Failed', error.message);
+      } finally {
+        // Reset loading state
+        uploadSubmit.disabled = false;
+        uploadText.classList.remove('hidden');
+        uploadSpinner.classList.add('hidden');
+      }
+    });
+  }
+});
+
+// Archive Functions
+async function loadArchive() {
+  try {
+    const res = await fetch('http://localhost:8080/files');
+    const data = await res.json();
+    renderArchiveSection(data.files);
+  } catch (error) {
+    console.error('Error loading archive:', error);
+    document.getElementById('archive-section').innerHTML = `
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center">
+        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+          </svg>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Connection Error</h3>
+        <p class="text-gray-600">Unable to connect to server</p>
+      </div>
+    `;
+  }
+}
+
+function renderArchiveSection(files) {
+  const archiveContainer = document.getElementById('archive-section');
+  
+  if (!files || files.length === 0) {
+    archiveContainer.innerHTML = `
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center">
+        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+          </svg>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">No files uploaded</h3>
+        <p class="text-gray-500">Start by uploading your first file using the Upload button.</p>
+      </div>
+    `;
+    return;
+  }
+
+  const categoryColors = {
+    'hr-documents': 'bg-blue-100 text-blue-800',
+    'policies': 'bg-red-100 text-red-800',
+    'training': 'bg-green-100 text-green-800',
+    'legal': 'bg-purple-100 text-purple-800',
+    'technical': 'bg-indigo-100 text-indigo-800',
+    'marketing': 'bg-pink-100 text-pink-800',
+    'other': 'bg-gray-100 text-gray-800'
+  };
+
+  const fileTypeIcons = {
+    pdf: { color: 'bg-red-100 text-red-600', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
+    doc: { color: 'bg-blue-100 text-blue-600', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
+    docx: { color: 'bg-blue-100 text-blue-600', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
+    txt: { color: 'bg-gray-100 text-gray-600', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
+    png: { color: 'bg-green-100 text-green-600', icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z' },
+    jpg: { color: 'bg-green-100 text-green-600', icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z' },
+    jpeg: { color: 'bg-green-100 text-green-600', icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z' },
+    zip: { color: 'bg-yellow-100 text-yellow-600', icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10' },
+    rar: { color: 'bg-yellow-100 text-yellow-600', icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10' }
+  };
+
+  let archiveHTML = `
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-xl font-semibold text-gray-900">File Archive</h2>
+            <p class="text-sm text-gray-600 mt-1">All uploaded files across the organization</p>
+          </div>
+          <div class="text-sm text-gray-500">
+            <span class="font-semibold text-gray-900">${files.length}</span> files total
+          </div>
+        </div>
+      </div>
+      
+      <div class="p-6">
+        <div class="grid gap-4">
+  `;
+  
+  files.forEach(file => {
+    const fileType = fileTypeIcons[file.file_type] || fileTypeIcons.pdf;
+    const categoryColor = categoryColors[file.category] || categoryColors.other;
+    
+    archiveHTML += `
+      <div class="bg-gray-50 rounded-lg p-6 card-hover">
+        <div class="flex items-start justify-between">
+          <div class="flex items-start space-x-4 flex-1">
+            <div class="w-12 h-12 ${fileType.color} rounded-lg flex items-center justify-center flex-shrink-0">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${fileType.icon}"></path>
+              </svg>
+            </div>
+            
+            <div class="flex-1 min-w-0">
+              <h3 class="text-lg font-semibold text-gray-900 mb-1">${file.title}</h3>
+              <p class="text-gray-600 text-sm mb-3">Original filename: ${file.original_filename}</p>
+              
+              <div class="flex items-center space-x-4 text-xs text-gray-500 mb-3">
+                <span class="flex items-center space-x-1">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                  </svg>
+                  <span>${file.file_type.toUpperCase()}</span>
+                </span>
+                <span class="flex items-center space-x-1">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path>
+                  </svg>
+                  <span>${file.file_size}</span>
+                </span>
+                <span class="flex items-center space-x-1">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                  </svg>
+                  <span>${file.upload_date} ${file.upload_time}</span>
+                </span>
+              </div>
+              
+              <div class="flex items-center space-x-2">
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${categoryColor}">
+                  ${file.category.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                </span>
+                <span class="text-xs text-gray-500">by ${file.uploaded_by}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="flex items-center space-x-2 ml-4">
+            <button onclick="downloadArchiveFile('${file.id}')" 
+                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+              <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+              Download
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+  
+  archiveHTML += `
+        </div>
+      </div>
+    </div>
+  `;
+  
+  archiveContainer.innerHTML = archiveHTML;
+}
+
+async function downloadArchiveFile(fileId) {
+  try {
+    const res = await fetch(`http://localhost:8080/files/download/${fileId}`);
+    const data = await res.json();
+    
+    if (res.ok) {
+      showNotification('success', 'Download Started', `${data.message}\n\n${data.note}`);
+    } else {
+      showNotification('error', 'Download Failed', data.error);
+    }
+  } catch (error) {
+    console.error('Error downloading file:', error);
+    showNotification('error', 'Connection Error', 'Unable to connect to server');
+  }
 }
