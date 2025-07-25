@@ -1,10 +1,35 @@
 from flask import Flask, render_template, jsonify
+from flask_cors import CORS
+from flask_login import LoginManager
 import json
 import os
 from datetime import datetime, timedelta
 import random
+import logging
+from backend.db import init_db, db
+from backend.utils.auth import role_required
+from backend.models.contract import Contract
+from backend.models.user import User
 
 app = Flask(__name__, template_folder='../templates', static_folder='../static')
+app.config['SECRET_KEY'] = 'muvhr-secret-key-change-in-production'
+CORS(app)
+
+# Initialize database
+init_db(app)
+
+# Initialize Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'auth.login'
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+# Setup logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # ==========================================
 # MOCK DATA FOR ALL MODULES
@@ -188,24 +213,41 @@ def get_role_access(role):
     return jsonify({"error": "Invalid role", "success": False}), 400
 
 @app.route("/api/contractors/<role>")
+@role_required("contracts")
 def get_contractors(role):
-    role_formatted = format_role_name(role)
-    if "Contractors" in role_module_access.get(role_formatted, []):
-        return jsonify({"contractors": mock_contractors, "success": True})
-    return jsonify({"error": "Access denied for this role", "success": False}), 403
+    logger.info(f"Fetching contractors for role: {role}")
+    try:
+        # Fetch contractors from database
+        contracts = Contract.query.all()
+        contractors_data = [contract.to_dict() for contract in contracts]
+        
+        logger.info(f"Successfully returned {len(contractors_data)} contractors from database")
+        return jsonify({"contractors": contractors_data, "success": True})
+    except Exception as e:
+        logger.error(f"Database error fetching contractors: {str(e)}")
+        return jsonify({"error": "Failed to fetch contractors", "success": False}), 500
 
 @app.route("/api/onboarding/<role>")
+@role_required("onboarding")
 def get_onboarding(role):
+    logger.info(f"Fetching onboarding data for role: {role}")
     role_formatted = format_role_name(role)
     if "Onboarding" in role_module_access.get(role_formatted, []):
+        logger.info(f"Successfully returned {len(mock_onboarding_staff)} onboarding staff")
         return jsonify({"staff": mock_onboarding_staff, "success": True})
+    logger.warning(f"Access denied for role: {role}")
     return jsonify({"error": "Access denied for this role", "success": False}), 403
 
 @app.route("/api/resources/<role>")
+@role_required("resources")
 def get_resources(role):
+    logger.info(f"Fetching resources for role: {role}")
     role_formatted = format_role_name(role)
     if "Resources" in role_module_access.get(role_formatted, []):
+        resources_count = len(mock_resources.get(role_formatted, []))
+        logger.info(f"Successfully returned {resources_count} resources for {role}")
         return jsonify({"resources": mock_resources.get(role_formatted, []), "success": True})
+    logger.warning(f"Access denied for role: {role}")
     return jsonify({"error": "Access denied for this role", "success": False}), 403
 
 @app.route("/api/time-off/<role>")
@@ -237,8 +279,11 @@ def get_entities(role):
     return jsonify({"error": "Access denied for this role", "success": False}), 403
 
 @app.route("/api/upload", methods=["POST"])
+@role_required("uploads")
 def mock_upload():
+    logger.info("File upload attempt")
     # Mock upload endpoint - just returns success
+    logger.info("File uploaded successfully (mock)")
     return jsonify({
         "success": True,
         "message": "File uploaded successfully (mock)",
@@ -251,6 +296,10 @@ def mock_upload():
 @app.route("/api/files")
 def get_uploaded_files():
     return jsonify({"files": mock_uploaded_files, "success": True})
+
+# Register auth blueprint
+from backend.routes.auth import auth_bp
+app.register_blueprint(auth_bp)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

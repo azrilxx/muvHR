@@ -88,7 +88,28 @@ const moduleDefinitions = {
 // UTILITY FUNCTIONS
 // ==========================================
 
+// Global variable to store current user role from session
+window.currentRole = null;
+
+// Fetch user role from backend session
+async function fetchUserRole() {
+    try {
+        const res = await fetch('/me');
+        const data = await res.json();
+        window.currentRole = data.authenticated ? data.role : null;
+        return data;
+    } catch (e) {
+        console.error('Error fetching user role:', e);
+        window.currentRole = null;
+        return { role: null, authenticated: false };
+    }
+}
+
 function getCurrentRole() {
+    // If we have a session role, use it; otherwise fallback to role selector
+    if (window.currentRole) {
+        return window.currentRole.toLowerCase();
+    }
     const roleSelect = document.getElementById('role-select');
     return roleSelect.value;
 }
@@ -128,7 +149,10 @@ function clearAllSections() {
 // ROLE MANAGEMENT
 // ==========================================
 
-function updateRoleDisplay() {
+async function updateRoleDisplay() {
+    // Fetch latest session info
+    const sessionData = await fetchUserRole();
+    
     const currentRole = getCurrentRole();
     const roleDisplay = document.getElementById('current-role-display');
     const welcomeHeader = document.getElementById('welcome-header');
@@ -145,6 +169,8 @@ function updateRoleDisplay() {
         };
         
         const roleName = roleMap[currentRole];
+        const isAuthenticated = sessionData.authenticated;
+        const sessionIndicator = isAuthenticated ? '🔐 Authenticated' : '🔓 Demo Mode';
         const roleEmoji = {
             'admin': '👑',
             'hr': '👥', 
@@ -176,6 +202,7 @@ function updateRoleDisplay() {
             <div class="flex items-center space-x-2 px-3 py-2 bg-primary-50 rounded-lg border border-primary-200">
                 <span class="text-lg">${roleEmoji[currentRole]}</span>
                 <span class="text-primary-700 font-medium">${roleName}</span>
+                <span class="text-xs text-gray-500 ml-2">${sessionIndicator}</span>
             </div>
         `;
         
@@ -244,7 +271,7 @@ function generateDashboardModules(roleName) {
         const descriptionColor = isLocked ? 'text-gray-400' : 'text-gray-600';
         
         const onClickHandler = isLocked ? '' : `onclick="${module.onClick}"`;
-        const tooltip = isLocked ? `title="Restricted – Login required"` : '';
+        const tooltip = isLocked ? `title="Restricted – ${sessionData.authenticated ? 'Access denied for role' : 'Login required'}"` : '';
         
         modulesHTML += `
             <div class="group ${cardClass} rounded-xl shadow-sm border p-6 transition-all duration-200 text-left" 
@@ -258,7 +285,7 @@ function generateDashboardModules(roleName) {
                     <div>
                         <h3 class="text-lg font-semibold ${titleColor} transition-colors">${module.title}</h3>
                         <p class="${descriptionColor} text-sm">${module.description}</p>
-                        ${isLocked ? '<p class="text-xs text-gray-400 mt-1">🔒 Login required</p>' : ''}
+                        ${isLocked ? `<p class="text-xs text-gray-400 mt-1">🔒 ${sessionData.authenticated ? 'Access denied' : 'Login required'}</p>` : ''}
                     </div>
                 </div>
             </div>
