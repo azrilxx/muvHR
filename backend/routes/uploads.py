@@ -5,13 +5,18 @@ import os
 import uuid
 import json
 import time
+import logging
+from backend.utils.auth import role_required
+
+logger = logging.getLogger(__name__)
 
 uploads_bp = Blueprint('uploads', __name__)
 
 # Configuration
 UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), '..', 'uploads')
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'doc', 'docx', 'xls', 'xlsx', 'zip', 'rar'}
-MAX_FILE_SIZE = 16 * 1024 * 1024  # 16MB
+# Restricted file extensions for security
+ALLOWED_EXTENSIONS = {'pdf', 'docx', 'xlsx'}  # Only allow safe document types
+MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB max file size
 
 def load_uploads_data():
     """Load uploads from JSON file with error handling"""
@@ -48,9 +53,22 @@ def check_role_access(user_role, feature='uploads'):
     return feature in role_permissions.get(user_role, [])
 
 def allowed_file(filename):
-    """Check if file extension is allowed"""
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    """Check if file extension is allowed and secure"""
+    if not filename or '.' not in filename:
+        return False
+    
+    extension = filename.rsplit('.', 1)[1].lower()
+    
+    # Check against allowed extensions
+    if extension not in ALLOWED_EXTENSIONS:
+        return False
+    
+    # Additional security checks
+    dangerous_patterns = ['..', '/', '\\', '<', '>', '|', ':', '*', '?', '"']
+    if any(pattern in filename for pattern in dangerous_patterns):
+        return False
+    
+    return True
 
 def format_file_size(size_bytes):
     """Convert bytes to human readable format"""
@@ -66,6 +84,7 @@ def format_file_size(size_bytes):
     return f"{size_bytes:.1f} {size_names[i]}"
 
 @uploads_bp.route("/upload", methods=["POST"])
+@role_required("uploads")
 def upload_file():
     """Handle file upload with role-based access control"""
     time.sleep(0.5)  # Simulate upload processing delay
@@ -98,7 +117,20 @@ def upload_file():
         return jsonify({"error": "Category is required"}), 400
     
     if not allowed_file(file.filename):
-        return jsonify({"error": "File type not allowed"}), 400
+        logger.warning(f"Attempted upload of disallowed file: {file.filename}")
+        return jsonify({"error": "File type not allowed. Only PDF, DOCX, and XLSX files are permitted."}), 400
+    
+    # Check file size
+    file.seek(0, os.SEEK_END)
+    file_size = file.tell()
+    file.seek(0)
+    
+    if file_size > MAX_FILE_SIZE:
+        logger.warning(f"File too large: {file_size} bytes")
+        return jsonify({"error": f"File size exceeds maximum allowed size of {MAX_FILE_SIZE // (1024*1024)}MB"}), 400
+    
+    if file_size == 0:
+        return jsonify({"error": "Empty file not allowed"}), 400
     
     try:
         # Create uploads directory if it doesn't exist
